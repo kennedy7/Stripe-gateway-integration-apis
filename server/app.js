@@ -12,10 +12,8 @@ const storeItems = new Map([
     [2,  {priceInCents: 897000, name: 'backend crash course'}]
 ])
 
-app.listen(port, ()=>{
-    console.log(`app started running on ${port} successfully`)
-})
-app.post('/creating payment', async(req, res)=>{
+
+app.post('/create-checkout-session', async(req, res)=>{
     try{
         const session = stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -23,8 +21,8 @@ app.post('/creating payment', async(req, res)=>{
             line_items: req.body.items.map(item=>{
                 const storeItem = storeItems.get(item.id)
                 return{
-                    pricing_data:{
-                        currency: 'nga',
+                    price_data:{
+                        currency: 'ngn',
                         product_data:{ 
                             name: storeItem.name,
                         },
@@ -43,4 +41,7 @@ app.post('/creating payment', async(req, res)=>{
     } catch(e){
            res.status(500).json({ error: e.message })
     }
+})
+app.listen(port, ()=>{
+    console.log(`app started running on ${port} successfully`)
 })
